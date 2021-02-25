@@ -1,5 +1,8 @@
 """Example usage of the uclasm package for finding subgraph isomorphisms."""
 
+import sys
+sys.path.append('/home/ebarnett/uclasm')
+print(sys.path)
 import uclasm
 
 tmplt = uclasm.load_edgelist("template.csv",
