@@ -18,3 +18,6 @@ labels = nodelist.label
 # Use the same graph data for both template and world graphs
 tmplt = uclasm.Graph(nodes, channels, adjs, labels=labels)
 world = uclasm.Graph(nodes, channels, adjs, labels=labels)
+
+tmplt.ch_to_adj[0].A
+tmplt.ch_to_adj[1].A
