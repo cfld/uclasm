@@ -3,6 +3,8 @@ import networkx as nx
 from . import run_filters, cheap_filters
 from ..utils.misc import one_hot
 
+from tqdm import tqdm
+
 def centrality_ordered_node_idxs(tmplt, world, candidates):
     """
     Use some arbitrary heuristics to sort the idxs of the template nodes.
@@ -58,14 +60,15 @@ def elimination_filter(tmplt, world, candidates, *,
 
         elim_count = 0
         cand_idxs = np.argwhere(candidates[node_idx]).flat
-        for i, cand_idx in enumerate(cand_idxs):
+        gen = tqdm(cand_idxs) if verbose else cand_idxs
+        for i, cand_idx in enumerate(gen):
             # Don't modify the original template unless you mean to
             candidates_copy = candidates.copy()
             candidates_copy[:, cand_idx] = False
             candidates_copy[node_idx, :] = one_hot(cand_idx, world.n_nodes)
 
-            if verbose and i % 10 == 0:
-                print("cand {} of {}".format(i, len(cand_idxs)))
+            # if verbose and i % 10 == 0:
+            #     print("cand {} of {}".format(i, len(cand_idxs)))
 
             _, _, result_candidates = run_filters(
                 tmplt, world, candidates=candidates_copy, filters=cheap_filters,

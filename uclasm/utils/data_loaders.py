@@ -6,8 +6,7 @@ from scipy.sparse import csr_matrix
 # TODO: make channel column optional
 
 def edgelist_to_adjs(edgelist, nodelist=None):
-    edgecounts = edgelist.groupby(by=edgelist.columns.tolist(),
-                                  as_index=False).size().reset_index(name="count")
+    edgecounts = edgelist.groupby(by=edgelist.columns.tolist(), as_index=False).size().reset_index(name="count")
 
     if "channel" in edgelist.columns:
         channels = edgecounts.channel.unique()
@@ -19,14 +18,13 @@ def edgelist_to_adjs(edgelist, nodelist=None):
     nodes = nodelist.node
 
     node_to_idx = {node: idx for idx, node in enumerate(nodes)}
-    edgecounts[["src", "dst"]] = edgecounts[["src", "dst"]].applymap(node_to_idx.get)
+    edgecounts[["src", "dst"]] = edgecounts[["src", "dst"]].applymap(lambda x: node_to_idx[x])
 
     if "channel" in edgelist.columns:
         adjs = []
         for channel in channels:
             ch_ec = edgecounts[edgecounts.channel==channel]
-            adjs.append(csr_matrix((ch_ec["count"], (ch_ec["src"], ch_ec["dst"])),
-                        shape=(len(node_to_idx), len(node_to_idx))))
+            adjs.append(csr_matrix((ch_ec["count"], (ch_ec["src"], ch_ec["dst"])), shape=(len(node_to_idx), len(node_to_idx))))
     else:
         # [None] is used since there are no channels
         channels = [None]
@@ -114,5 +112,5 @@ def load_edgelist(filepath, *,
                            names=names,
                            engine='python',
                            **kwargs)
-
+    
     return edgelist_to_adjs(edgelist, nodelist)
