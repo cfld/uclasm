@@ -18,15 +18,15 @@ import uclasm
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--root',  type=str, default='/home/ubuntu/projects/umdMAA/python/data')
-    parser.add_argument('--world', type=str, default='V2_2_HRL_alignment')
-    parser.add_argument('--tmplt', type=str, default='V4_1sender-2payees1city')
-    parser.add_argument('--mode',  type=str, default='no_sc')
+    parser.add_argument('--root',  type=str, default='/home/ubuntu/projects/umdMAA/python/data/nyc')
+    # parser.add_argument('--world', type=str, default='V2_2_HRL_alignment')
+    parser.add_argument('--tmplt', type=str, default='tmplt_01a')
+    # parser.add_argument('--mode',  type=str, default='no_sc')
     
     args = parser.parse_args()
-    assert args.mode == 'no_sc'
-    args.indir  = os.path.join(args.root, args.mode, args.world, args.tmplt)
-    args.outdir = os.path.join('output', args.world, args.tmplt)
+    # assert args.mode == 'no_sc'
+    args.indir  = os.path.join(args.root, args.tmplt)
+    args.outdir = os.path.join('output', args.tmplt)
     
     return args
 
@@ -44,8 +44,11 @@ _load_combo_kwargs = {
     "header"           : 0,
 }
 
-w_nodelist, w_channels, w_adjs = uclasm.load_combo(os.path.join(args.indir, "uc_world.csv"), **_load_combo_kwargs)
 t_nodelist, t_channels, t_adjs = uclasm.load_combo(os.path.join(args.indir, "uc_tmplt.csv"), **_load_combo_kwargs)
+w_nodelist, w_channels, w_adjs = uclasm.load_combo(os.path.join(args.indir, "uc_world.csv"), **_load_combo_kwargs)
+
+t_nodelist.label.value_counts()
+w_nodelist.label.value_counts()
 
 # --
 # Form Graph
@@ -68,12 +71,12 @@ tmplt, world, candidates = uclasm.run_filters(
   verbose=True
 )
 
-n_isos = uclasm.count_isomorphisms(
-  tmplt,
-  world,
-  candidates=candidates,
-  verbose=True
-)
+# n_isos = uclasm.count_isomorphisms(
+#   tmplt,
+#   world,
+#   candidates=candidates,
+#   verbose=True
+# )
 
 isos = uclasm.find_isomorphisms(tmplt, world, candidates=candidates, verbose=False)
 isos = pd.DataFrame(isos)

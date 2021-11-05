@@ -55,7 +55,7 @@ def load_combo(filepath, *,
     nodelist = pd.read_csv(filepath,
                            usecols=usecols,
                            names=names,
-                           engine='python',
+                        #    engine='python',
                            **kwargs)
 
     # Get rid of the "vs" column
@@ -75,6 +75,7 @@ def load_combo(filepath, *,
                            **kwargs)
     edgelist = edgelist[edgelist.vs != node_str][names[1:]]
 
+    print('edgelist_to_adjs')
     return edgelist_to_adjs(edgelist, nodelist)
 
 def load_nodelist(filepath, *,
